@@ -6,7 +6,7 @@ import json
 from tinydb import TinyDB, Query
 
 
-bot = telebot.TeleBot('5045463995:AAF9swJxTOlj7l2y7wZuNaaJ7zU1YGz92FQ')
+bot = telebot.TeleBot('6064336632:AAFuXSwBH7lWFynBMLSETKYQCUZ9RJTLMTY')
 
 user_data = {}
 db = TinyDB('answers_db.json')
@@ -21,6 +21,7 @@ def gen_markup(options, k):
         markup.add(*l)
     return markup
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     req = call.data.split('_')
@@ -28,10 +29,10 @@ def callback_inline(call):
     k = json_string['questionNumber'] + 1
     answer = json_string['answerText']
     
-    if k == 0 and answer == "Нет, я боюся":
+    if k == 0 and answer == "Неа":
         return bot.edit_message_text(chat_id=call.message.chat.id,
                                      message_id=call.message.message_id,
-                                     text='Ну и бойся дальше:(((\nНо если передумаешь, нажми /start')
+                                     text='Ну и зануда(((')
     user_id = call.from_user.id
     if user_id not in user_data:
         user_data[user_id] = Anket(questions)
@@ -52,14 +53,16 @@ def callback_inline(call):
 
         return bot.edit_message_text(chat_id=call.message.chat.id,
                                      message_id=call.message.message_id,
-                                     text=f'Спасибо за уделённое время, вы набрали: {score} из {anket.length} баллов. \nБолее подробно результаты вы можете посмотреть через команду /results')
+                                     text=f'Спасибо за уделённое время, вы набрали: {score} из {anket.length} баллов. \nРезультаты - /results')
 
     button_column = anket.config[k].get('options')
     bot.edit_message_text(chat_id=call.message.chat.id,
                           message_id=call.message.message_id,
                           text=anket.get_question(k),
                           reply_markup=gen_markup(button_column, k))
-    
+
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.from_user.id
@@ -67,13 +70,12 @@ def start(message):
         user_data[user_id] = Anket(questions)
     anket = user_data[user_id]
     anket.answers = []
-    db.remove(Query().user_id == user_id)  # Удаление предыдущих ответов пользователя из базы данных
+    db.remove(Query().user_id == user_id)
     k = -1
-    button_column = ['Погнали', 'Нет, я боюся']
-    bot.send_message(chat_id=message.chat.id, text="Привет, я бот-анкета! \nОтветь на мои вопросы?",
+    button_column = ['Да', 'Неа']
+    bot.send_message(chat_id=message.chat.id, text="Привет, я бот! Ответь на мои вопросы и проверь свои знания. Погнали?",
                      reply_markup=gen_markup(button_column, k))
-
-
+    
 @bot.message_handler(commands=['results'])
 def show_results(message):
     user_id = message.from_user.id

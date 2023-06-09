@@ -5,7 +5,6 @@ class Anket:
     def __init__(self, config):
         self.config = config
         self.length = len(config)
-        self.answers = []
 
     def add_answers(self, answers: list):
         scores = 0
@@ -15,10 +14,10 @@ class Anket:
             qtype = self.config[question_number].get('type')
             right_answer = self.config[question_number].get('answer')
             qanswer = answer['answerText']
-            print(f"Вопрос: {self.get_question(question_number)}")
-            print(f"Тип: {qtype}")
-            print(f"Правильный ответ: {right_answer}")
-            print(f"Ответ пользователя: {qanswer}")
+            print(f"Question: {self.get_question(question_number)}")
+            print(f"Type: {qtype}")
+            print(f"Right Answer: {right_answer}")
+            print(f"User Answer: {qanswer}")
             if qtype == 'closed':
                 scores += 1 if qanswer == right_answer else 0
             if qtype == 'multiple_choice':

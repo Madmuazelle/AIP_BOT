@@ -49,7 +49,7 @@ def callback_inline(call):
         del user_data[user_id]
 
         # Сохранение результатов в базу данных
-        db.insert({'user_id': user_id, 'score': score, 'answers': anket.answers})
+        db.update({'user_id': user_id, 'score': score, 'answers': anket.answers})
 
         return bot.edit_message_text(chat_id=call.message.chat.id,
                                      message_id=call.message.message_id,
